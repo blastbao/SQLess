@@ -53,7 +53,7 @@ CQL database consistency mode and node count can be selected in database creatio
 | **Open Source**              | Y                 | Y                      | N           | Y                                                            |
 | **Nodes for HA**             | 3                 | 15                     | ?           | 3                                                            |
 | **Column Level ACL**         | N                 | Y                      | ?           | Y                                                            |
-| **Data Format**              | File              | Key-value              | Document    | File<sup>[fuse](#fuse)</sup>, Key-value, Structured          |
+| **Data Format**              | File              | Key-value              | Document    | Key-value, Structured                                        |
 | **Storage Encryption**       | N                 | API                    | Y           | Y                                                            |
 | **Data Desensitization**     | N                 | N                      | N           | Y                                                            |
 | **Multi-tenant**             | DIY               | DIY                    | N           | Y                                                            |
