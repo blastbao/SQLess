@@ -25,7 +25,6 @@ import (
 	"testing"
 	"time"
 
-	"github.com/SQLess/SQLess/test"
 	"github.com/SQLess/SQLess/utils"
 	"github.com/SQLess/SQLess/utils/log"
 )

@@ -44,7 +44,6 @@ import (
 	"github.com/SQLess/SQLess/proto"
 	"github.com/SQLess/SQLess/route"
 	rpc "github.com/SQLess/SQLess/rpc/mux"
-	"github.com/SQLess/SQLess/test"
 	"github.com/SQLess/SQLess/types"
 	"github.com/SQLess/SQLess/utils"
 	"github.com/SQLess/SQLess/utils/log"

@@ -6,23 +6,14 @@ require (
 	github.com/SQLess/HashStablePack v1.0.1-0.20191125194549-ee2874fe5e86
 	github.com/SQLess/go-sqlite3-cipher v1.13.0
 	github.com/SQLess/sqlparser v0.0.0-20191129050254-58eb8e5b5a66
-	github.com/allegro/bigcache v1.2.1 // indirect
 	github.com/btcsuite/btcd v0.0.0-20190614013741-962a206e94e9
 	github.com/btcsuite/btcutil v0.0.0-20190425235716-9e5f4b9a998d
 	github.com/davecgh/go-spew v1.1.1
-	github.com/dghubble/oauth1 v0.5.0 // indirect
-	github.com/dghubble/sling v1.2.0 // indirect
 	github.com/fortytw2/leaktest v1.3.0
-	github.com/gin-contrib/cors v1.3.0 // indirect
-	github.com/gin-contrib/sse v0.1.0 // indirect
-	github.com/go-playground/locales v0.12.1 // indirect
-	github.com/google/go-github v17.0.0+incompatible // indirect
-	github.com/google/go-querystring v1.0.0 // indirect
 	github.com/gorilla/handlers v1.4.0
 	github.com/gorilla/mux v1.7.2
 	github.com/gorilla/websocket v1.4.0
 	github.com/hashicorp/golang-lru v0.5.1
-	github.com/ivpusic/grpool v1.0.0 // indirect
 	github.com/jmoiron/jsonq v0.0.0-20150511023944-e874b168d07e
 	github.com/jordwest/mock-conn v0.0.0-20180617021051-4896c6bd1641
 	github.com/minio/blake2b-simd v0.0.0-20160723061019-3f5f724cb5b1
@@ -41,5 +32,6 @@ require (
 	github.com/xtaci/smux v1.3.4-0.20190522035559-79b3c96b84d1
 	github.com/zserge/metric v0.1.1-0.20190429132510-b0b64cb7bfea
 	golang.org/x/crypto v0.0.0-20190621222207-cc06ce4a13d4
+	golang.org/x/tools v0.0.0-20191127201027-ecd32218bd7f // indirect
 	gopkg.in/yaml.v2 v2.2.2
 )
