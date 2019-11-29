@@ -1,0 +1,20 @@
+upstream cql_api_backend {
+	server ${CQL_OBSERVER_ADDR};
+}
+
+server {
+	listen 80;
+	server_name ${CQL_EXPLORER_DOMAIN};
+
+	location / {
+		root /usr/share/nginx/html/;
+		index index.html;
+		try_files ${MAGIC_DOLLAR}uri ${MAGIC_DOLLAR}uri/ /index.html;
+	}
+
+	location /apiproxy.cqlprotocol/ {
+		proxy_set_header Host ${MAGIC_DOLLAR}host;
+		proxy_set_header X-Real-IP ${MAGIC_DOLLAR}remote_addr;
+		proxy_pass http://cql_api_backend/;
+	}
+}
