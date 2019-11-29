@@ -14,6 +14,8 @@ Features:
 - Low cost DBaaS
 - Just like filecoin + IPFS is the decentralized file system, CQL is the decentralized database
 
+CQL is a derived work of [CovenantSQL](https://github.com/CovenantSQL).
+
 ## Quick Start
 
 CQL client supports:
