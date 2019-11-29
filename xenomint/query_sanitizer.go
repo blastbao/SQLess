@@ -22,7 +22,7 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/CovenantSQL/sqlparser"
+	"github.com/SQLess/sqlparser"
 	"github.com/pkg/errors"
 
 	"github.com/SQLess/SQLess/types"
