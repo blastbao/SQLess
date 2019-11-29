@@ -23,7 +23,8 @@ msgpack-20180824
 
 # Generated
 *_gen*.go
-gen-stamp
+stamp-gen
+stamp-submodule
 
 # Binaries for programs and plugins
 bin/
