@@ -2,6 +2,17 @@ default: all
 
 version := 0.1-alpha
 
+unamestr := $(shell uname)
+
+ifeq ($(unamestr),Linux)
+  platform := linux
+else
+  ifeq ($(unamestr),Darwin)
+    platform := darwin
+  endif
+endif
+
+tags := $(platform) sqlite_omit_load_extension
 test_tags := $(tags) testbinary
 test_flags := -coverpkg github.com/SQLess/SQLess/... -cover -race -c
 
