@@ -50,8 +50,8 @@ CQL database consistency mode and node count can be selected in database creatio
 
 |                              | Ethereum          | Hyperledger Fabric     | Amazon QLDB | CQL                                                          |
 | ---------------------------- | ----------------- | ---------------------- | ----------- | ------------------------------------------------------------ |
-| **Dev language**             | Solidity, ewasm   | Chaincode (Go, NodeJS) | ?           | Python, Golang, Java, PHP, NodeJS, MatLab                    |
-| **Dev Pattern**              | Smart   Contract  | Chaincode              | SQL         | SQL                                                          |
+| **Dev language**             | Solidity, ewasm   | Java, Go, Node.js      | Java        | Java, Go, Node.js, Python                                    |
+| **Dev Pattern**              | Smart Contract    | Chaincode              | SQL         | SQL                                                          |
 | **Open Source**              | Y                 | Y                      | N           | Y                                                            |
 | **Nodes for HA**             | 3                 | 15                     | ?           | 3                                                            |
 | **Column Level ACL**         | N                 | Y                      | ?           | Y                                                            |
