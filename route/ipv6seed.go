@@ -21,7 +21,6 @@ import (
 	"net"
 	"sync"
 
-	"github.com/CovenantSQL/beacon/ipv6"
 	"github.com/pkg/errors"
 
 	"github.com/SQLess/SQLess/crypto"
@@ -59,22 +58,22 @@ func (isc *IPv6SeedClient) GetBPFromDNSSeed(BPDomain string) (BPNodes IDNodeMap,
 	// Public key
 	go func() {
 		defer wg.Done()
-		pubBuf, pubErr = ipv6.FromDomain(PUBKEY+BPDomain, f)
+		pubBuf, pubErr = FromDomain(PUBKEY+BPDomain, f)
 	}()
 	// Nonce
 	go func() {
 		defer wg.Done()
-		nonceBuf, nonceErr = ipv6.FromDomain(NONCE+BPDomain, f)
+		nonceBuf, nonceErr = FromDomain(NONCE+BPDomain, f)
 	}()
 	// Addr
 	go func() {
 		defer wg.Done()
-		addrBuf, addrErr = ipv6.FromDomain(ADDR+BPDomain, f)
+		addrBuf, addrErr = FromDomain(ADDR+BPDomain, f)
 	}()
 	// NodeID
 	go func() {
 		defer wg.Done()
-		nodeIDBuf, nodeIDErr = ipv6.FromDomain(ID+BPDomain, f)
+		nodeIDBuf, nodeIDErr = FromDomain(ID+BPDomain, f)
 	}()
 
 	wg.Wait()
@@ -143,7 +142,7 @@ func (isc *IPv6SeedClient) GetBPFromDNSSeed(BPDomain string) (BPNodes IDNodeMap,
 // GenBPIPv6 generates the IPv6 addrs contain BP info
 func (isc *IPv6SeedClient) GenBPIPv6(node *proto.Node, domain string) (out string, err error) {
 	// NodeID
-	nodeIDIps, err := ipv6.ToIPv6(node.ID.ToRawNodeID().AsBytes())
+	nodeIDIps, err := ToIPv6(node.ID.ToRawNodeID().AsBytes())
 	if err != nil {
 		return "", err
 	}
@@ -151,7 +150,7 @@ func (isc *IPv6SeedClient) GenBPIPv6(node *proto.Node, domain string) (out strin
 		out += fmt.Sprintf("%02d.%s%s	1	IN	AAAA	%s\n", i, ID, domain, ip)
 	}
 
-	pubKeyIps, err := ipv6.ToIPv6(crypto.AddPKCSPadding(node.PublicKey.Serialize()))
+	pubKeyIps, err := ToIPv6(crypto.AddPKCSPadding(node.PublicKey.Serialize()))
 	if err != nil {
 		return "", err
 	}
@@ -160,7 +159,7 @@ func (isc *IPv6SeedClient) GenBPIPv6(node *proto.Node, domain string) (out strin
 	}
 
 	// Nonce
-	nonceIps, err := ipv6.ToIPv6(node.Nonce.Bytes())
+	nonceIps, err := ToIPv6(node.Nonce.Bytes())
 	if err != nil {
 		return "", err
 	}
@@ -169,7 +168,7 @@ func (isc *IPv6SeedClient) GenBPIPv6(node *proto.Node, domain string) (out strin
 	}
 
 	// Addr
-	addrIps, err := ipv6.ToIPv6(crypto.AddPKCSPadding([]byte(node.Addr)))
+	addrIps, err := ToIPv6(crypto.AddPKCSPadding([]byte(node.Addr)))
 	if err != nil {
 		return "", err
 	}

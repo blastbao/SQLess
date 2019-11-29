@@ -4,7 +4,6 @@ go 1.13
 
 require (
 	cloud.google.com/go v0.40.0 // indirect
-	github.com/CovenantSQL/beacon v0.0.0-20190521023351-8402bfe07ece
 	github.com/CovenantSQL/sqlparser v0.0.0-20190618091803-c4a6cf6cebb6
 	github.com/SQLess/HashStablePack v1.0.1-0.20191125194549-ee2874fe5e86
 	github.com/SQLess/go-sqlite3-cipher v1.13.0

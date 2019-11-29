@@ -6,8 +6,6 @@ cloud.google.com/go v0.40.0/go.mod h1:Tk58MuI9rbLMKlAjeO/bDnteAx7tX2gJIXw4T5Jwlr
 github.com/BurntSushi/toml v0.3.1/go.mod h1:xHWCNGjB5oqiDr8zfno3MHue2Ht5sIBksp03qcyfWMU=
 github.com/CovenantSQL/HashStablePack v2.0.0+incompatible h1:gV5qy4uU6X8gF3BEoIYGDpk4j2bdHuUZ5c6ntzUCbCk=
 github.com/CovenantSQL/HashStablePack v2.0.0+incompatible/go.mod h1:j3/ZR//Y2JLhvJrwzE0TUe4Jx2L80N7r8xh6gfQkkUg=
-github.com/CovenantSQL/beacon v0.0.0-20190521023351-8402bfe07ece h1:gEt5nz/88hnQcx0wAETyRJAXIFklJUGiPiuj/9NXDDw=
-github.com/CovenantSQL/beacon v0.0.0-20190521023351-8402bfe07ece/go.mod h1:8qPonlOGD4WOYlgy6KVusp7+O5/GlKRl0wBr2OjBu60=
 github.com/CovenantSQL/sqlparser v0.0.0-20190618091803-c4a6cf6cebb6 h1:a3BgrZT+0Po7xggIN789+lJHySEPpUpHCT2YbPdUPwU=
 github.com/CovenantSQL/sqlparser v0.0.0-20190618091803-c4a6cf6cebb6/go.mod h1:0nyvStvq7NsxxLPM+rxTIeKq8CDFBmk9XI6NG9Iqet8=
 github.com/Masterminds/semver v1.4.2/go.mod h1:MB6lktGJrhw8PrUyiEoblNEGEQ+RzHPF078ddwwvV3Y=
