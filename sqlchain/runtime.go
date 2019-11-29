@@ -56,7 +56,7 @@ type runtime struct {
 	queryTTL int32
 	// blockCacheTTL sets the cached block numbers.
 	blockCacheTTL int32
-	// muxServer is the multiplexing service of sql-chain PRC.
+	// muxServer is the multiplexing service of sql-chain RPC.
 	muxService *MuxService
 
 	// peersMutex protects following peers-relative fields.
