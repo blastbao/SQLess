@@ -83,7 +83,7 @@ func commonFlagsInit(cmd *Command) {
 
 func addConfigFlag(cmd *Command) {
 	cmd.CommonFlag.StringVar(&configFile, "config", "~/.cql/config.yaml",
-		"Config file for CovanantSQL (Usually no need to set, default is enough.)")
+		"Config file (Usually no need to set, default is enough.)")
 }
 
 func configInit() {
