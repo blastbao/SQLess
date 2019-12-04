@@ -69,7 +69,7 @@ CQL database consistency mode and node count can be selected in database creatio
 
 #### Privacy data
 
-If you are a developper of password management tools just like [1Password](https://1password.com/) or [LastPass](https://www.lastpass.com/). You can use CQL as the database to take benefits:
+If you are a developer of password management tools just like [1Password](https://1password.com/) or [LastPass](https://www.lastpass.com/). You can use CQL as the database to take benefits:
 
 1. Serverless: no need to deploy a server to store your user's password for sync which is the hot potato.
 2. Security: CQL handles all the encryption work. Decentralized data storage gives more confidence to your users.
