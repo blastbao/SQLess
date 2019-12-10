@@ -89,7 +89,7 @@ static int secp256k1_ext_reencode_pubkey(
 	return secp256k1_ec_pubkey_serialize(ctx, out, &outlen, &pubkey, flag);
 }
 
-// cql_secp256k1_ext_scalar_mul multiplies a point by a scalar in constant time.
+// secp256k1_ext_scalar_mul multiplies a point by a scalar in constant time.
 //
 // Returns: 1: multiplication was successful
 //          0: scalar was invalid (zero or overflow)
@@ -98,7 +98,7 @@ static int secp256k1_ext_reencode_pubkey(
 //  In:     point:    pointer to a 64-byte public point,
 //                    encoded as two 256bit big-endian numbers.
 //          scalar:   a 32-byte scalar with which to multiply the point
-int cql_secp256k1_ext_scalar_mul(const secp256k1_context* ctx, unsigned char *point, const unsigned char *scalar) {
+int secp256k1_ext_scalar_mul(const secp256k1_context* ctx, unsigned char *point, const unsigned char *scalar) {
 	int ret = 0;
 	int overflow = 0;
 	secp256k1_fe feX, feY;
@@ -116,7 +116,7 @@ int cql_secp256k1_ext_scalar_mul(const secp256k1_context* ctx, unsigned char *po
 	if (overflow || secp256k1_scalar_is_zero(&s)) {
 		ret = 0;
 	} else {
-		secp256k1_ecmult_const(&res, &ge, &s);
+		secp256k1_ecmult_const(&res, &ge, &s, 256);
 		secp256k1_ge_set_gej(&ge, &res);
 		/* Note: can't use secp256k1_pubkey_save here because it is not constant time. */
 		secp256k1_fe_normalize(&ge.x);

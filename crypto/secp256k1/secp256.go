@@ -8,20 +8,22 @@ package secp256k1
 /*
 #cgo CFLAGS: -I./libsecp256k1
 #cgo CFLAGS: -I./libsecp256k1/src/
+#cgo CFLAGS: -DUSE_BASIC_CONFIG=1
+#cgo CFLAGS: -DECMULT_GEN_PREC_BITS=4
+#cgo CFLAGS: -DECMULT_WINDOW_SIZE=15
 #define USE_NUM_NONE
 #define USE_FIELD_10X26
 #define USE_FIELD_INV_BUILTIN
 #define USE_SCALAR_8X32
 #define USE_SCALAR_INV_BUILTIN
 #define NDEBUG
-#define SECP256K1_API static
 #include "./libsecp256k1/src/secp256k1.c"
 #include "./libsecp256k1/src/modules/recovery/main_impl.h"
 #include "ext.h"
 
 typedef void (*callbackFunc) (const char* msg, void* data);
-extern void cql_secp256k1GoPanicIllegal(const char* msg, void* data);
-extern void cql_secp256k1GoPanicError(const char* msg, void* data);
+extern void secp256k1GoPanicIllegal(const char* msg, void* data);
+extern void secp256k1GoPanicError(const char* msg, void* data);
 */
 import "C"
 
@@ -36,25 +38,18 @@ var context *C.secp256k1_context
 func init() {
 	// around 20 ms on a modern CPU.
 	context = C.secp256k1_context_create_sign_verify()
-	C.secp256k1_context_set_illegal_callback(context, C.callbackFunc(C.cql_secp256k1GoPanicIllegal), nil)
-	C.secp256k1_context_set_error_callback(context, C.callbackFunc(C.cql_secp256k1GoPanicError), nil)
+	C.secp256k1_context_set_illegal_callback(context, C.callbackFunc(C.secp256k1GoPanicIllegal), nil)
+	C.secp256k1_context_set_error_callback(context, C.callbackFunc(C.secp256k1GoPanicError), nil)
 }
 
 var (
-	// ErrInvalidMsgLen is invalid message length, need 32 bytes
-	ErrInvalidMsgLen = errors.New("invalid message length, need 32 bytes")
-	// ErrInvalidSignatureLen is invalid signature length
+	ErrInvalidMsgLen       = errors.New("invalid message length, need 32 bytes")
 	ErrInvalidSignatureLen = errors.New("invalid signature length")
-	// ErrInvalidRecoveryID is invalid signature recovery id
-	ErrInvalidRecoveryID = errors.New("invalid signature recovery id")
-	// ErrInvalidKey is invalid private key
-	ErrInvalidKey = errors.New("invalid private key")
-	// ErrInvalidPubkey is invalid public key
-	ErrInvalidPubkey = errors.New("invalid public key")
-	// ErrSignFailed is signing failed
-	ErrSignFailed = errors.New("signing failed")
-	// ErrRecoverFailed is recovery failed
-	ErrRecoverFailed = errors.New("recovery failed")
+	ErrInvalidRecoveryID   = errors.New("invalid signature recovery id")
+	ErrInvalidKey          = errors.New("invalid private key")
+	ErrInvalidPubkey       = errors.New("invalid public key")
+	ErrSignFailed          = errors.New("signing failed")
+	ErrRecoverFailed       = errors.New("recovery failed")
 )
 
 // Sign creates a recoverable ECDSA signature.
@@ -77,7 +72,7 @@ func Sign(msg []byte, seckey []byte) ([]byte, error) {
 
 	var (
 		msgdata   = (*C.uchar)(unsafe.Pointer(&msg[0]))
-		noncefunc = C.cql_secp256k1_nonce_function_rfc6979
+		noncefunc = C.secp256k1_nonce_function_rfc6979
 		sigstruct C.secp256k1_ecdsa_recoverable_signature
 	)
 	if C.secp256k1_ecdsa_sign_recoverable(context, &sigstruct, msgdata, seckeydata, noncefunc, nil) == 0 {
