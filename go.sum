@@ -7,7 +7,6 @@ github.com/MichaelS11/go-cql-driver v0.0.0-20190315050006-6dafc35aac9b/go.mod h1
 github.com/SAP/go-hdb v0.14.1/go.mod h1:7fdQLVC2lER3urZLjZCm0AuMQfApof92n3aylBPEkMo=
 github.com/SQLess/HashStablePack v1.0.1-0.20191125194549-ee2874fe5e86 h1:mTIBrdNAP017XLfSUQcdU4UXTXiZ7Ck9/HRJADQnOus=
 github.com/SQLess/HashStablePack v1.0.1-0.20191125194549-ee2874fe5e86/go.mod h1:zX8UExr5MZEL6EQYrU1edsUzPMne507WJk+UOb4OnSM=
-github.com/SQLess/HashStablePack v2.0.0+incompatible h1:WP+JA3w3Gj7jVchoR9kQ/86gOYpUOJwQG35lCnEbqtc=
 github.com/SQLess/go-sqlite3-cipher v1.13.0 h1:u+4s/VJjPUA4Hwk0/Uf2anvPONF67uVHPWsJSyFfXys=
 github.com/SQLess/go-sqlite3-cipher v1.13.0/go.mod h1:U1S5OupsXBXMCuAXRwx46QqEngPeQQjp/BRbWY/jK0g=
 github.com/SQLess/sqlparser v0.0.0-20191129050254-58eb8e5b5a66 h1:JirDxqVNYDhS9BtAlXu9d/hvlAYNBL7rdi5VM7OOWRI=
@@ -317,8 +316,6 @@ golang.org/x/tools v0.0.0-20190226205152-f727befe758c/go.mod h1:9Yl7xja0Znq3iFh3
 golang.org/x/tools v0.0.0-20190312170243-e65039ee4138/go.mod h1:LCzVGOaR6xXOjkQ3onu1FJEFr0SW1gC7cKk1uF8kGRs=
 golang.org/x/tools v0.0.0-20191125141128-89d49d945af0 h1:4bMu/Qc0RDWjME4FsdYi5BOcLEobuKd18ivs3GwDHX0=
 golang.org/x/tools v0.0.0-20191125141128-89d49d945af0/go.mod h1:b+2E5dAYhXwXZwtnZ6UAqBI28+e2cm9otk0dWdXHAEo=
-golang.org/x/tools v0.0.0-20191127201027-ecd32218bd7f h1:3MlESg/jvTr87F4ttA/q4B+uhe/q6qleC9/DP+IwQmY=
-golang.org/x/tools v0.0.0-20191127201027-ecd32218bd7f/go.mod h1:b+2E5dAYhXwXZwtnZ6UAqBI28+e2cm9otk0dWdXHAEo=
 golang.org/x/xerrors v0.0.0-20190717185122-a985d3407aa7/go.mod h1:I/5z698sn9Ka8TeJc9MKroUUfqBBauWjQqLJ2OPfmY0=
 google.golang.org/api v0.3.1/go.mod h1:6wY9I6uQWHQ8EM57III9mq/AjF+i8G65rmVagqKMtkk=
 google.golang.org/appengine v1.1.0/go.mod h1:EbEs0AVv82hx2wNQdGPgUI5lhzA/G0D9YwlJXL52JkM=

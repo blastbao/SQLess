@@ -10,18 +10,21 @@ require (
 	github.com/btcsuite/btcutil v0.0.0-20190425235716-9e5f4b9a998d
 	github.com/davecgh/go-spew v1.1.1
 	github.com/fortytw2/leaktest v1.3.0
+	github.com/gopherjs/gopherjs v0.0.0-20191106031601-ce3c9ade29de // indirect
 	github.com/gorilla/handlers v1.4.0
 	github.com/gorilla/mux v1.7.2
 	github.com/gorilla/websocket v1.4.0
 	github.com/hashicorp/golang-lru v0.5.1
 	github.com/jmoiron/jsonq v0.0.0-20150511023944-e874b168d07e
 	github.com/jordwest/mock-conn v0.0.0-20180617021051-4896c6bd1641
+	github.com/jtolds/gls v4.20.0+incompatible // indirect
 	github.com/minio/blake2b-simd v0.0.0-20160723061019-3f5f724cb5b1
 	github.com/mohae/deepcopy v0.0.0-20170929034955-c48cc78d4826
 	github.com/pkg/errors v0.8.1
 	github.com/rakyll/statik v0.1.6
 	github.com/rcrowley/go-metrics v0.0.0-20181016184325-3113b8401b8a
 	github.com/sirupsen/logrus v1.4.2
+	github.com/smartystreets/assertions v1.0.1 // indirect
 	github.com/smartystreets/goconvey v0.0.0-20170602164621-9e8dc3f972df
 	github.com/sourcegraph/jsonrpc2 v0.0.0-20190106185902-35a74f039c6a
 	github.com/syndtr/goleveldb v1.0.0
@@ -32,6 +35,5 @@ require (
 	github.com/xtaci/smux v1.3.4-0.20190522035559-79b3c96b84d1
 	github.com/zserge/metric v0.1.1-0.20190429132510-b0b64cb7bfea
 	golang.org/x/crypto v0.0.0-20190621222207-cc06ce4a13d4
-	golang.org/x/tools v0.0.0-20191127201027-ecd32218bd7f // indirect
 	gopkg.in/yaml.v2 v2.2.2
 )
