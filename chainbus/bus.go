@@ -60,8 +60,8 @@ type eventHandler struct {
 	callBack      reflect.Value
 	flagOnce      bool
 	async         bool
-	transactional bool
-	sync.Mutex    // lock for an event handler - useful for running async callbacks serially
+	transactional bool	// transactional determines whether subsequent callbacks for a topic are run serially (true) or concurrently (false)
+	sync.Mutex    		// lock for an event handler - useful for running async callbacks serially
 }
 
 // New returns new ChainBus with empty handlers.
@@ -78,9 +78,11 @@ func New() Bus {
 func (bus *ChainBus) doSubscribe(topic string, fn interface{}, handler *eventHandler) error {
 	bus.lock.Lock()
 	defer bus.lock.Unlock()
+	// 仅支持 func 类型
 	if !(reflect.TypeOf(fn).Kind() == reflect.Func) {
 		return fmt.Errorf("%s is not of type reflect.Func", reflect.TypeOf(fn).Kind())
 	}
+	// 监听 topic
 	bus.handlers[topic] = append(bus.handlers[topic], handler)
 	return nil
 }
@@ -88,9 +90,17 @@ func (bus *ChainBus) doSubscribe(topic string, fn interface{}, handler *eventHan
 // Subscribe subscribes to a topic.
 // Returns error if `fn` is not a function.
 func (bus *ChainBus) Subscribe(topic string, fn interface{}) error {
-	return bus.doSubscribe(topic, fn, &eventHandler{
-		reflect.ValueOf(fn), false, false, false, sync.Mutex{},
-	})
+	return bus.doSubscribe(
+		topic,
+		fn,
+		&eventHandler{
+		reflect.ValueOf(fn),
+		false,
+		false,
+		false,
+		sync.Mutex{},
+		},
+	)
 }
 
 // SubscribeAsync subscribes to a topic with an asynchronous callback
@@ -99,9 +109,17 @@ func (bus *ChainBus) Subscribe(topic string, fn interface{}) error {
 // run serially (true) or concurrently (false)
 // Returns error if `fn` is not a function.
 func (bus *ChainBus) SubscribeAsync(topic string, fn interface{}, transactional bool) error {
-	return bus.doSubscribe(topic, fn, &eventHandler{
-		reflect.ValueOf(fn), false, true, transactional, sync.Mutex{},
-	})
+	return bus.doSubscribe(
+		topic,
+		fn,
+		&eventHandler{
+		reflect.ValueOf(fn),
+		false,
+		true,
+		transactional,
+		sync.Mutex{},
+		},
+	)
 }
 
 // SubscribeOnce subscribes to a topic once. Handler will be removed after executing.
@@ -145,23 +163,28 @@ func (bus *ChainBus) Unsubscribe(topic string, handler interface{}) error {
 	return fmt.Errorf("topic %s doesn't exist", topic)
 }
 
-// Publish executes callback defined for a topic. Any additional argument will be transferred to the callback.
+// Publish executes callback defined for a topic.
+// Any additional argument will be transferred to the callback.
 func (bus *ChainBus) Publish(topic string, args ...interface{}) {
 	bus.lock.Lock() // will unlock if handler is not found or always after setUpPublish
 	defer bus.lock.Unlock()
+
 	if handlers, ok := bus.handlers[topic]; ok && 0 < len(handlers) {
 		// Handlers slice may be changed by removeHandler and Unsubscribe during iteration,
 		// so make a copy and iterate the copied slice.
 		copyHandlers := make([]*eventHandler, 0, len(handlers))
 		copyHandlers = append(copyHandlers, handlers...)
 		for i, handler := range copyHandlers {
+			// 若仅触发一次，就先移除它。
 			if handler.flagOnce {
 				bus.removeHandler(topic, i)
 			}
+			// 若为 Async 则启动 goroutine 后台执行，否则同步执行。
 			if !handler.async {
 				bus.doPublish(handler, topic, args...)
 			} else {
 				bus.wg.Add(1)
+				// 如果异步的 handler 需要串行执行，则每个 handler 执行前后需要 lock/unlock 串行化。
 				if handler.transactional {
 					handler.Lock()
 				}
@@ -171,6 +194,7 @@ func (bus *ChainBus) Publish(topic string, args ...interface{}) {
 	}
 }
 
+// 调用 handler.callBack(args) 回调函数。
 func (bus *ChainBus) doPublish(handler *eventHandler, topic string, args ...interface{}) {
 	passedArguments := bus.setUpPublish(topic, args...)
 	handler.callBack.Call(passedArguments)
@@ -210,8 +234,9 @@ func (bus *ChainBus) findHandlerIdx(topic string, callback reflect.Value) int {
 	return -1
 }
 
-func (bus *ChainBus) setUpPublish(topic string, args ...interface{}) []reflect.Value {
 
+// 把 args ...interface{} 转换成 []reflect.Value 类型，这样便于 reflect.Value.Call(in []reflect.Value) 执行函数调用。
+func (bus *ChainBus) setUpPublish(topic string, args ...interface{}) []reflect.Value {
 	passedArguments := make([]reflect.Value, 0)
 	for _, arg := range args {
 		passedArguments = append(passedArguments, reflect.ValueOf(arg))

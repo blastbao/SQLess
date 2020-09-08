@@ -56,13 +56,11 @@ func NewDSN(s string) (*DSN, error) {
 // Format formats DSN to a connection string.
 func (dsn *DSN) Format() string {
 	l := len(dsn.params)
-
 	if l <= 0 {
 		return fmt.Sprintf("file:%s", dsn.filename)
 	}
 
 	params := make([]string, 0, l)
-
 	for k, v := range dsn.params {
 		params = append(params, strings.Join([]string{k, v}, "="))
 	}

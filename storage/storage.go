@@ -40,12 +40,16 @@ var (
 )
 
 // Query represents the single query of sqlite.
+//
+// Query 对应了一个参数化查询 sql 语句。
 type Query struct {
-	Pattern string
-	Args    []sql.NamedArg
+	Pattern string			// 格式串
+	Args    []sql.NamedArg	// 参数列表
 }
 
 // ExecLog represents the execution log of sqlite.
+//
+// 执行日志。
 type ExecLog struct {
 	ConnectionID uint64
 	SeqNo        uint64
@@ -87,11 +91,9 @@ func openDB(dsn string) (db *sql.DB, err error) {
 
 	if !ok {
 		db, err = sql.Open("sqlite3", fdsn)
-
 		if err != nil {
 			return nil, err
 		}
-
 		index.Lock()
 		index.db[d.filename] = db
 		index.Unlock()
@@ -102,9 +104,9 @@ func openDB(dsn string) (db *sql.DB, err error) {
 
 // TxID represents a transaction ID.
 type TxID struct {
-	ConnectionID uint64
-	SeqNo        uint64
-	Timestamp    int64
+	ConnectionID uint64	// 连接 ID
+	SeqNo        uint64	// 事务号
+	Timestamp    int64	// 时间戳
 }
 
 func equalTxID(x, y *TxID) bool {
@@ -124,7 +126,6 @@ type Storage struct {
 // New returns a new storage connected by dsn.
 func New(dsn string) (st *Storage, err error) {
 	db, err := openDB(dsn)
-
 	if err != nil {
 		return
 	}
@@ -137,31 +138,32 @@ func New(dsn string) (st *Storage, err error) {
 
 // Prepare implements prepare method of two-phase commit worker.
 func (s *Storage) Prepare(ctx context.Context, wb twopc.WriteBatch) (err error) {
-	el, ok := wb.(*ExecLog)
 
+	el, ok := wb.(*ExecLog)
 	if !ok {
 		return errors.New("unexpected WriteBatch type")
 	}
 
+	// 锁保护，避免并发
 	s.Lock()
 	defer s.Unlock()
 
+	// 如果 `s.tx != nil` ，则已存在进行中的事务，检查是否为同一事务，若是则为重复 prepare ，直接返回，否则报错。
 	if s.tx != nil {
 		if equalTxID(&s.id, &TxID{el.ConnectionID, el.SeqNo, el.Timestamp}) {
 			s.queries = el.Queries
 			return nil
 		}
-
-		return fmt.Errorf("twopc: inconsistent state, currently in tx: "+
-			"conn = %d, seq = %d, time = %d", s.id.ConnectionID, s.id.SeqNo, s.id.Timestamp)
+		return fmt.Errorf("twopc: inconsistent state, currently in tx: conn = %d, seq = %d, time = %d", s.id.ConnectionID, s.id.SeqNo, s.id.Timestamp)
 	}
 
+	// 创建事务对象，并保存到 s.tx 上
 	s.tx, err = s.db.BeginTx(ctx, nil)
-
 	if err != nil {
 		return
 	}
 
+	// 构造 s.id
 	s.id = TxID{el.ConnectionID, el.SeqNo, el.Timestamp}
 	s.queries = el.Queries
 
@@ -184,18 +186,15 @@ func (s *Storage) Commit(ctx context.Context, wb twopc.WriteBatch) (result inter
 		if equalTxID(&s.id, &TxID{el.ConnectionID, el.SeqNo, el.Timestamp}) {
 			// get last insert id and affected rows result
 			execResult := ExecResult{}
-
 			for _, q := range s.queries {
+
 				// convert arguments types
 				args := make([]interface{}, len(q.Args))
-
 				for i, v := range q.Args {
 					args[i] = v
 				}
-
 				var res sql.Result
 				res, err = s.tx.ExecContext(ctx, q.Pattern, args...)
-
 				if err != nil {
 					log.WithError(err).Debug("commit query failed")
 					s.tx.Rollback()
@@ -219,8 +218,7 @@ func (s *Storage) Commit(ctx context.Context, wb twopc.WriteBatch) (result inter
 			return
 		}
 
-		err = fmt.Errorf("twopc: inconsistent state, currently in tx: "+
-			"conn = %d, seq = %d, time = %d", s.id.ConnectionID, s.id.SeqNo, s.id.Timestamp)
+		err = fmt.Errorf("twopc: inconsistent state, currently in tx: conn = %d, seq = %d, time = %d", s.id.ConnectionID, s.id.SeqNo, s.id.Timestamp)
 		return
 	}
 
@@ -230,8 +228,8 @@ func (s *Storage) Commit(ctx context.Context, wb twopc.WriteBatch) (result inter
 
 // Rollback implements rollback method of two-phase commit worker.
 func (s *Storage) Rollback(ctx context.Context, wb twopc.WriteBatch) (err error) {
-	el, ok := wb.(*ExecLog)
 
+	el, ok := wb.(*ExecLog)
 	if !ok {
 		return errors.New("unexpected WriteBatch type")
 	}
@@ -240,8 +238,7 @@ func (s *Storage) Rollback(ctx context.Context, wb twopc.WriteBatch) (err error)
 	defer s.Unlock()
 
 	if !equalTxID(&s.id, &TxID{el.ConnectionID, el.SeqNo, el.Timestamp}) {
-		return fmt.Errorf("twopc: inconsistent state, currently in tx: "+
-			"conn = %d, seq = %d, time = %d", s.id.ConnectionID, s.id.SeqNo, s.id.Timestamp)
+		return fmt.Errorf("twopc: inconsistent state, currently in tx: conn = %d, seq = %d, time = %d", s.id.ConnectionID, s.id.SeqNo, s.id.Timestamp)
 	}
 
 	if s.tx != nil {
@@ -249,7 +246,6 @@ func (s *Storage) Rollback(ctx context.Context, wb twopc.WriteBatch) (err error)
 		s.tx = nil
 		s.queries = nil
 	}
-
 	return nil
 }
 

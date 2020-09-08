@@ -109,8 +109,9 @@ func TestBadType(t *testing.T) {
 }
 
 func TestStorage(t *testing.T) {
-	fl, err := ioutil.TempFile("", "sqlite3-")
 
+
+	fl, err := ioutil.TempFile("", "sqlite3-")
 	if err != nil {
 		t.Fatalf("error occurred: %v", err)
 	}
@@ -181,9 +182,7 @@ func TestStorage(t *testing.T) {
 	}
 
 	// test query
-	columns, types, data, err := st.Query(context.Background(),
-		[]Query{newQuery("SELECT * FROM `kv` ORDER BY `key` ASC")})
-
+	columns, types, data, err := st.Query(context.Background(), []Query{newQuery("SELECT * FROM `kv` ORDER BY `key` ASC")})
 	if err != nil {
 		t.Fatalf("query failed: %v", err.Error())
 	}

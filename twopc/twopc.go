@@ -82,17 +82,16 @@ func (c *Coordinator) prepare(ctx context.Context, workers []Worker, wb WriteBat
 	wg := sync.WaitGroup{}
 	workerFunc := func(n Worker, e *error, wg *sync.WaitGroup) {
 		defer wg.Done()
-
 		*e = n.Prepare(ctx, wb)
 	}
-
+	// 并发调用 worker.Prepare() 函数，错误信息保存到 errs[index] 中
 	for index, worker := range workers {
 		wg.Add(1)
 		go workerFunc(worker, &errs[index], &wg)
 	}
-
 	wg.Wait()
 
+	// 如果任何一个 worker 出错，就报错返回
 	var index int
 	for index, err = range errs {
 		if err != nil {
@@ -101,6 +100,7 @@ func (c *Coordinator) prepare(ctx context.Context, workers []Worker, wb WriteBat
 		}
 	}
 
+	// 成功，返回 nil
 	return
 }
 
@@ -109,17 +109,15 @@ func (c *Coordinator) rollback(ctx context.Context, workers []Worker, wb WriteBa
 	wg := sync.WaitGroup{}
 	workerFunc := func(n Worker, e *error, wg *sync.WaitGroup) {
 		defer wg.Done()
-
 		*e = n.Rollback(ctx, wb)
 	}
-
+	// 并发调用 worker.Rollback() 函数，错误信息保存到 errs[index] 中
 	for index, worker := range workers {
 		wg.Add(1)
 		go workerFunc(worker, &errs[index], &wg)
 	}
-
 	wg.Wait()
-
+	// 如果任何一个 worker 出错，就报错返回
 	var index int
 	for index, err = range errs {
 		if err != nil {
@@ -127,16 +125,16 @@ func (c *Coordinator) rollback(ctx context.Context, workers []Worker, wb WriteBa
 			return
 		}
 	}
-
+	// 成功，返回 nil
 	return
 }
 
 func (c *Coordinator) commit(ctx context.Context, workers []Worker, wb WriteBatch) (result interface{}, err error) {
 	errs := make([]error, len(workers))
 	wg := sync.WaitGroup{}
+
 	workerFunc := func(n Worker, resPtr *interface{}, e *error, wg *sync.WaitGroup) {
 		defer wg.Done()
-
 		var res interface{}
 		res, *e = n.Commit(ctx, wb)
 		if resPtr != nil {
@@ -144,17 +142,19 @@ func (c *Coordinator) commit(ctx context.Context, workers []Worker, wb WriteBatc
 		}
 	}
 
+	// 并发调用 worker.Commit() 函数，错误信息保存到 errs[index] 中，提交结果保存到 *resPtr 中
 	for index, worker := range workers {
 		wg.Add(1)
+		// 注意，这里仅获取第一个 worker 的返回值。
 		if index == 0 {
 			go workerFunc(worker, &result, &errs[index], &wg)
 		} else {
 			go workerFunc(worker, nil, &errs[index], &wg)
 		}
 	}
-
 	wg.Wait()
 
+	// 如果任何一个 worker 出错，就报错返回
 	var index int
 	for index, err = range errs {
 		if err != nil {
@@ -162,15 +162,17 @@ func (c *Coordinator) commit(ctx context.Context, workers []Worker, wb WriteBatc
 			return
 		}
 	}
-
+	// 成功，返回 nil
 	return
 }
 
 // Put initiates a 2PC process to apply given WriteBatch on all workers.
 func (c *Coordinator) Put(workers []Worker, wb WriteBatch) (result interface{}, err error) {
+
 	// Initiate phase one: ask nodes to prepare for progress
 	ctx, cancel := context.WithTimeout(context.Background(), c.option.timeout)
 	defer cancel()
+
 
 	if c.option.beforePrepare != nil {
 		if err = c.option.beforePrepare(ctx); err != nil {
@@ -179,11 +181,13 @@ func (c *Coordinator) Put(workers []Worker, wb WriteBatch) (result interface{}, 
 		}
 	}
 
+
 	// Check prepare results and initiate phase two
 	if err = c.prepare(ctx, workers, wb); err != nil {
 		goto ROLLBACK
 	}
 
+	// Hook
 	if c.option.beforeCommit != nil {
 		if err = c.option.beforeCommit(ctx); err != nil {
 			log.WithError(err).Debug("before commit failed")
@@ -193,6 +197,7 @@ func (c *Coordinator) Put(workers []Worker, wb WriteBatch) (result interface{}, 
 
 	result, err = c.commit(ctx, workers, wb)
 
+	// Hook
 	if c.option.afterCommit != nil {
 		if err = c.option.afterCommit(ctx); err != nil {
 			log.WithError(err).Debug("after commit failed")
@@ -202,6 +207,8 @@ func (c *Coordinator) Put(workers []Worker, wb WriteBatch) (result interface{}, 
 	return
 
 ROLLBACK:
+
+	// Hook
 	if c.option.beforeRollback != nil {
 		// ignore rollback fail options
 		c.option.beforeRollback(ctx)
